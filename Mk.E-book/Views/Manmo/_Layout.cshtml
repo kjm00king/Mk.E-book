@@ -1,0 +1,60 @@
+﻿@using Mk.E_book.BLL;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Manmo - @ViewBag.Title</title>
+    <!-- Path to Framework7 Library CSS-->
+    @Styles.Render("~/css/framework7")
+    <!-- Path to your custom app styles-->
+    @Styles.Render("~/css/manmo")
+</head>
+<body @RenderSection("body_style", required:false)>
+    <!-- Status bar overlay for fullscreen mode-->
+    <div class="statusbar-overlay"></div>
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+        </div>
+    </div>
+    <!-- Right panel with cover effect-->
+    <div class="panel panel-right panel-cover">
+        <div class="content-block">
+            <p>Right panel content goes here</p>
+        </div>
+    </div>
+    <!-- Views-->
+    <div class="views">
+        <!-- Your main view, should have "view-main" class-->
+        <div class="view view-main">
+            @RenderBody()
+        </div>
+    </div>
+    @Scripts.Render("~/js/framework7")
+
+    <script type="text/javascript">
+        var wxconfig = @Html.Raw(Utility.ToJson(MvcApplication.WebCache.Wxapi.getConfig(Request)));
+    </script>
+    
+    <script type="text/javascript">
+        // Initialize your app
+        var myApp = new Framework7();
+        // Export selectors engine
+        var $$ = Dom7;
+        // Add view
+        var mainView = myApp.addView('.view-main', {
+            // Because we use fixed-through navbar we can enable dynamic navbar
+            dynamicNavbar: true
+        });        
+    </script>
+
+    @RenderSection("myjs", required:false)
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+﻿@{
+    Layout = "_Layout.cshtml";
+}
+<!-- Top Navbar-->
+<div class="navbar">
+    <div class="navbar-inner">
+        <!-- We have home navbar without left link-->
+        <div class="center sliding">经销商通讯</div>
+        <div class="right"></div>
+    </div>
+</div>
+<!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+<div class="pages navbar-through toolbar-through">
+    <!-- Page, data-page contains page name-->
+    <div data-page="index" class="page">
+        <!-- Scrollable page content-->
+        <div class="page-content" style="overflow:hidden">
+            <svg version="1.1" id="cover" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="100%" height="100%" viewbox="0 0 1000 1600" enable-background="new 0 0 1000 1600"
+                xml:space="preserve">
+                <image xlink:href="@Model.CoverBg" height="1600" width="1000" x="0" y="0"></image>
+                <image xlink:href="@Model.CoverDate" height="1600" width="1000" x="0" y="0"></image>                         
+                @for (int i = 0; i < Model.Links.Count; i++) {
+                    <g onclick="goto(@Model.Links[i].UrlIndex)">
+                        @Html.Raw(Model.Links[i].Svg)
+                    </g>   
+                }
+            </svg>
+        </div>
+    </div>
+</div>
+<!-- Bottom Toolbar-->
+<div class="toolbar">
+    <div class="toolbar-inner">
+        <a href="javascript:prev()" class="link icon-only"> <i class="icon icon-prev" id="toPrev"></i> </a>
+        <a href="javascript:next()" class="link icon-only"> <i class="icon icon-next" id="toNext"></i> </a>
+    </div>
+</div>
+
+@using Mk.E_book.BLL;
+
+@section body_style {
+    style=" opacity: 0"
+}
+
+@section myjs {
+    <script type="text/javascript">
+        var page_urls = @Html.Raw(Utility.ToJson(Model.Urls));
+        var page_wechats = @Html.Raw(Utility.ToJson(Model.WeChats));
+        var page_no = 0;
+
+        function prev() {
+            mainView.back({ url: page_urls[Math.max(page_no - 1, 0)], force: true });
+        }
+        function next() {
+            goto(Math.min(page_no + 1, page_urls.length - 1) );
+        }
+        function goto(n, no_ant) {
+            mainView.loadPage({ url: page_urls[n], animatePages: (no_ant == undefined) });
+        }
+        function init() {
+            page_no = page_urls.indexOf(mainView.url);
+
+            (page_no == 0) ? $(toPrev).hide() : $(toPrev).show();
+            (page_no == page_urls.length - 1) ? $(toNext).hide() : $(toNext).show();
+
+            var current_wechat = page_wechats[page_no];
+
+            console.log(current_wechat);
+
+            var p = $("[name=page]");
+            if (p) {
+                p.bind("load", function () {
+                    $(".preloader").hide();
+                })
+            }
+        }
+
+        $(mainView.container).bind("pageInit", function () { init(); })
+        $(mainView.container).bind("pageAfterAnimation", function () {
+            $("body").css("opacity", 1);
+        })
+
+        goto(0, true);
+    </script>
+}

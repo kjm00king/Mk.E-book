@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "TestRest";
+}
+
+<h2>TestRest</h2>
+
+<input type="button" value="PUT" id="test-put" />
+
+@Scripts.Render("~/bundles/jquery")
+
+<script type="text/javascript">
+    $("#test-put").bind("click", function () {
+        $.ajax({
+            url: "/api/Rest/10"
+            , type: "put"
+            , data: {
+                arg1: "Str"
+                , arg2: ["Array_1", "Array_2"]
+                , arg3: { "Key": "Value" }
+                , "value":"999"
+            }
+            , dataType: "json"
+            , success: function (result) {
+                console.log(result);
+            }
+        });
+    });
+
+</script>
